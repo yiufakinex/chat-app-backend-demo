@@ -9,7 +9,7 @@
 
 ## About
 
-This is a relatively simple chat application created using Spring Boot in the backend.
+This is a relatively simple chat application created using Spring Boot in the backend. Users can create accounts via OAuth 2.0, and form custom group chats.
 
 ## Demo
 
