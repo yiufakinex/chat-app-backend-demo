@@ -37,6 +37,10 @@ import lombok.Setter;
 @Table(name = "user")
 public class User {
 
+    public enum AuthenticationProvider {
+        GOOGLE, GITHUB, DISCORD
+    }
+
     public enum Role {
         NEW_USER, USER, ADMIN, BANNED
     }
@@ -69,6 +73,10 @@ public class User {
 
     @Column(name = "avatar_url")
     private String avatarURL;
+
+    @Column(name = "authentication_provider")
+    @Enumerated(EnumType.STRING)
+    private AuthenticationProvider authenticationProvider;
 
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
