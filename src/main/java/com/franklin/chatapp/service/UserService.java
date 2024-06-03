@@ -81,8 +81,9 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User getUserFromPrincipal(Principal principal) {
+    public User getUserFromWebSocket(Principal principal) {
         CustomOAuth2User oAuth2User = (CustomOAuth2User) ((OAuth2AuthenticationToken) principal).getPrincipal();
         return oAuth2User.getUser();
     }
+
 }

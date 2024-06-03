@@ -5,6 +5,8 @@ import java.util.HashMap;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
+import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -34,5 +36,11 @@ public class InvalidInputExceptionHandler {
     @ExceptionHandler(InvalidInputException.class)
     public ResponseEntity<HashMap<String, Object>> handleInvalidInputException(InvalidInputException e) {
         return Response.errorMessage(e.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    @MessageExceptionHandler(InvalidInputException.class)
+    @SendToUser("/topic/errors")
+    public String handleInvalidInputWebSocketException(InvalidInputException e) {
+        return "Invalid input.";
     }
 }

@@ -54,14 +54,14 @@ public class GroupChatController {
     @SendTo("/topic/groupchat/{id}")
     public Message addUser(@DestinationVariable(value = "id") Long id, Principal principal,
             @Payload AddGroupChatUserForm form) {
-        User user = userService.getUserFromPrincipal(principal);
+        User user = userService.getUserFromWebSocket(principal);
         return groupChatService.addUser(user, form, id);
     }
 
     @MessageMapping("/update/{id}/users/remove")
     @SendTo("/topic/groupchat/{id}")
     public Message removeUser(@DestinationVariable(value = "id") Long id, Principal principal) {
-        User user = userService.getUserFromPrincipal(principal);
+        User user = userService.getUserFromWebSocket(principal);
         return groupChatService.removeUser(user, id);
     }
 
@@ -69,7 +69,7 @@ public class GroupChatController {
     @SendTo("/topic/groupchat/{id}")
     public Message renameGroupChat(@DestinationVariable(value = "id") Long id, Principal principal,
             @Payload RenameGroupChatForm form) {
-        User user = userService.getUserFromPrincipal(principal);
+        User user = userService.getUserFromWebSocket(principal);
         return groupChatService.renameGroupChat(user, form, id);
     }
 }

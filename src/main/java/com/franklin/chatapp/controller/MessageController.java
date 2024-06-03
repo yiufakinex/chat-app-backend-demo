@@ -39,7 +39,7 @@ public class MessageController {
     @SendTo("/topic/groupchat/{id}")
     public Message sendMessage(@DestinationVariable(value = "id") Long id, Principal principal,
             @Payload NewMessageForm newMessageForm) {
-        User user = userService.getUserFromPrincipal(principal);
+        User user = userService.getUserFromWebSocket(principal);
         return messageService.sendMessage(id, newMessageForm.getContent(), user);
     }
 
