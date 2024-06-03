@@ -1,4 +1,4 @@
-package com.franklin.chatapp;
+package com.franklin.chatapp.config;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
