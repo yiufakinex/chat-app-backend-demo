@@ -14,7 +14,9 @@ import org.springframework.stereotype.Component;
 import com.franklin.chatapp.entity.GroupChat;
 import com.franklin.chatapp.entity.User;
 import com.franklin.chatapp.service.GroupChatService;
+import com.franklin.chatapp.service.RateLimitService;
 import com.franklin.chatapp.service.UserService;
+import com.franklin.chatapp.service.RateLimitService.Token;
 
 @Component
 public class AuthChannelInterceptor implements ChannelInterceptor {
@@ -41,6 +43,7 @@ public class AuthChannelInterceptor implements ChannelInterceptor {
                 if (optional.isEmpty() || !optional.get().getUsers().contains(user)) {
                     return null;
                 }
+                RateLimitService.RateLimiter.rateLimit(user, Token.BIG_TOKEN);
             }
 
         }

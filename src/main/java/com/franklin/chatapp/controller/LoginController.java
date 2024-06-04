@@ -16,9 +16,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.franklin.chatapp.annotation.GetUser;
+import com.franklin.chatapp.annotation.RateLimitAPI;
 import com.franklin.chatapp.entity.User;
 import com.franklin.chatapp.entity.User.Role;
 import com.franklin.chatapp.service.UserService;
+import com.franklin.chatapp.service.RateLimitService.Token;
 import com.franklin.chatapp.util.Response;
 
 @RestController
@@ -42,6 +44,7 @@ public class LoginController {
     }
 
     @PostMapping(path = "/new_user", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @RateLimitAPI(Token.DEFAULT_TOKEN)
     public ResponseEntity<Void> newUser(@GetUser User user, @RequestParam("username") String username,
             @AuthenticationPrincipal OAuth2User oAuth2User) {
         userService.newUser(user, username, oAuth2User);

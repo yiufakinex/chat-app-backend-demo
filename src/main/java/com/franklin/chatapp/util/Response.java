@@ -36,6 +36,12 @@ public class Response {
         return new ResponseEntity<>(Response.createBody(keys, values), HttpStatus.OK);
     }
 
+    public static ResponseEntity<HashMap<String, Object>> rateLimit(Long ms) {
+        String[] keys = { "status", "reason" };
+        String[] values = { "error", "Rate Limit, try again in " + ms + "ms." };
+        return new ResponseEntity<>(createBody(keys, values), HttpStatus.TOO_MANY_REQUESTS);
+    }
+
     public static ResponseEntity<HashMap<String, Object>> serverError() {
         String[] keys = { "status", "reason" };
         String[] values = { "error", "Server Error." };

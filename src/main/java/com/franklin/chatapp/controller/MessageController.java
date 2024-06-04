@@ -17,12 +17,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.franklin.chatapp.annotation.GetUser;
+import com.franklin.chatapp.annotation.RateLimitAPI;
+import com.franklin.chatapp.annotation.RateLimitWebSocket;
 import com.franklin.chatapp.entity.Message;
 import com.franklin.chatapp.entity.User;
 import com.franklin.chatapp.form.NewMessageForm;
 import com.franklin.chatapp.form.PaginationForm;
 import com.franklin.chatapp.service.MessageService;
 import com.franklin.chatapp.service.UserService;
+import com.franklin.chatapp.service.RateLimitService.Token;
 import com.franklin.chatapp.util.Response;
 
 @Controller
@@ -37,6 +40,7 @@ public class MessageController {
 
     @MessageMapping("/send/{id}")
     @SendTo("/topic/groupchat/{id}")
+    @RateLimitWebSocket(Token.DEFAULT_TOKEN)
     public Message sendMessage(@DestinationVariable(value = "id") Long id, Principal principal,
             @Payload NewMessageForm newMessageForm) {
         User user = userService.getUserFromWebSocket(principal);
@@ -44,6 +48,7 @@ public class MessageController {
     }
 
     @GetMapping(path = "/{id}/get", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RateLimitAPI(Token.DEFAULT_TOKEN)
     public ResponseEntity<HashMap<String, Object>> getMessages(@GetUser User user,
             @PathVariable("id") Long id,
             PaginationForm paginationForm,

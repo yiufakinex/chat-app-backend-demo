@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.franklin.chatapp.annotation.GetUser;
+import com.franklin.chatapp.annotation.RateLimitAPI;
+import com.franklin.chatapp.annotation.RateLimitWebSocket;
 import com.franklin.chatapp.entity.Message;
 import com.franklin.chatapp.entity.User;
 import com.franklin.chatapp.form.AddGroupChatUserForm;
@@ -25,6 +27,7 @@ import com.franklin.chatapp.form.NewGroupChatForm;
 import com.franklin.chatapp.form.RenameGroupChatForm;
 import com.franklin.chatapp.service.GroupChatService;
 import com.franklin.chatapp.service.UserService;
+import com.franklin.chatapp.service.RateLimitService.Token;
 import com.franklin.chatapp.util.Response;
 
 @Controller
@@ -38,6 +41,7 @@ public class GroupChatController {
     private UserService userService;
 
     @PostMapping(path = "/new", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RateLimitAPI(Token.EXPENSIVE_TOKEN)
     public ResponseEntity<HashMap<String, Object>> newGroupChat(@GetUser User user,
             @RequestBody NewGroupChatForm newGroupChatForm) {
         return new ResponseEntity<>(
@@ -45,6 +49,7 @@ public class GroupChatController {
     }
 
     @GetMapping(path = "/get", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RateLimitAPI(Token.DEFAULT_TOKEN)
     public ResponseEntity<HashMap<String, Object>> getGroupChats(@GetUser User user) {
         return new ResponseEntity<>(Response.createBody("groupChats", groupChatService.getGroupChats(user)),
                 HttpStatus.OK);
@@ -52,6 +57,7 @@ public class GroupChatController {
 
     @MessageMapping("/update/{id}/users/add")
     @SendTo("/topic/groupchat/{id}")
+    @RateLimitWebSocket(Token.LARGE_TOKEN)
     public Message addUser(@DestinationVariable(value = "id") Long id, Principal principal,
             @Payload AddGroupChatUserForm form) {
         User user = userService.getUserFromWebSocket(principal);
@@ -60,6 +66,7 @@ public class GroupChatController {
 
     @MessageMapping("/update/{id}/users/remove")
     @SendTo("/topic/groupchat/{id}")
+    @RateLimitWebSocket(Token.BIG_TOKEN)
     public Message removeUser(@DestinationVariable(value = "id") Long id, Principal principal) {
         User user = userService.getUserFromWebSocket(principal);
         return groupChatService.removeUser(user, id);
@@ -67,6 +74,7 @@ public class GroupChatController {
 
     @MessageMapping("/update/{id}/rename")
     @SendTo("/topic/groupchat/{id}")
+    @RateLimitWebSocket(Token.LARGE_TOKEN)
     public Message renameGroupChat(@DestinationVariable(value = "id") Long id, Principal principal,
             @Payload RenameGroupChatForm form) {
         User user = userService.getUserFromWebSocket(principal);
